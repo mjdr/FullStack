@@ -14,6 +14,9 @@ import desu.fullStack.lang.ast.PrintStatement;
 import desu.fullStack.lang.ast.Statement;
 import desu.fullStack.lang.ast.StatementBlock;
 import desu.fullStack.lang.ast.UnaryExpression;
+import desu.fullStack.lang.ast.VariableAssignStatement;
+import desu.fullStack.lang.ast.VariableExpression;
+import desu.fullStack.lang.ast.VariableInitStatement;
 import desu.fullStack.lang.lexer.Token;
 import desu.fullStack.lang.lexer.TokenType;
 
@@ -40,9 +43,37 @@ public class Parser {
 		if(peek().type == TokenType.LCBR)
 			return parseStatementBlock();
 		
+		if(
+				peek(0).type == TokenType.ID &&
+				peek(1).type == TokenType.ID &&
+				peek(2).type == TokenType.SEMI
+		 ) return parseVariableInitStatement();
+		
+		if(
+				peek(0).type == TokenType.ID &&
+				peek(1).type == TokenType.EQ
+		 ) return parseVariableAssignStatement();
+		
+		 
+		
 		throw new RuntimeException("Unexpected token " + peek());
 		
 	}
+	private Statement parseVariableAssignStatement() {
+		String name = must(TokenType.ID).text;
+		must(TokenType.EQ);
+		Expression expression = parseExpression();
+		must(TokenType.SEMI);
+		return new VariableAssignStatement(name, expression);
+	}
+
+	private Statement parseVariableInitStatement() {
+		String type = must(TokenType.ID).text;
+		String name = must(TokenType.ID).text;
+		must(TokenType.SEMI);
+		return new VariableInitStatement(type, name);
+	}
+
 	private Statement parseFunctionStatement() {
 		String retType = must(TokenType.ID).text;
 		String name = must(TokenType.ID).text;
@@ -158,7 +189,18 @@ public class Parser {
 	}
 
 	private Expression number() {
-		return new ConstantExpression(Integer.parseInt(must(TokenType.NUMBER).text));
+		if(peek().type == TokenType.NUMBER)
+			return new ConstantExpression(Float.parseFloat(must(TokenType.NUMBER).text));
+		if(peek().type == TokenType.ID)
+			return new VariableExpression(must(TokenType.ID).text);
+		if(peek().type == TokenType.LBR) {
+			must(TokenType.LBR);
+			Expression expression = parseExpression();
+			must(TokenType.RBR);
+			return expression;
+		}
+		must(null);
+		return null;
 	}
 	
 	
@@ -171,7 +213,7 @@ public class Parser {
 			return read();
 		}
 		else
-			throw new RuntimeException(String.format("Expected %s , has %s", type.name(), peek().type.name()));
+			throw new RuntimeException(String.format("Expected %s , has %s [%s]", type.name(), peek().type.name(),peek().text));
 	}
 	
 	private Token peek() {

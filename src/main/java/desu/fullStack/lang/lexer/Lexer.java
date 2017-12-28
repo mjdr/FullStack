@@ -109,9 +109,16 @@ public class Lexer {
 
 	private void tokenizeNumber() {
 		StringBuffer buffer = new StringBuffer();
+		boolean dot = false;
 		
-		while(Character.isDigit(peek()))
-			buffer.append(read());
+		while(Character.isDigit(peek()) || peek() == '.')
+			if(peek() == '.') {
+				if(dot) break;
+				dot = true;
+				buffer.append(read());
+			}
+			else
+				buffer.append(read());
 		
 		tokens.add(new Token(TokenType.NUMBER, buffer.toString()));
 	}

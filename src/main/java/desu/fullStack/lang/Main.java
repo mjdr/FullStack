@@ -13,6 +13,7 @@ import desu.fullStack.lang.ast.Statement;
 import desu.fullStack.lang.lexer.Lexer;
 import desu.fullStack.lang.lexer.Token;
 import desu.fullStack.lang.tools.Compiler;
+import desu.fullStack.lang.tools.CompilerEnv;
 
 public class Main {
 	public static void main(String[] args) {
@@ -38,7 +39,7 @@ public class Main {
 		System.out.println(statement);
 		
 		PrintWriter pw = new PrintWriter("res/prog.vm");
-		pw.print(compiler.compileStatement(statement));
+		pw.print(compiler.compileStatement(CompilerEnv.create(), statement));
 		pw.print("\n\n\n\n#_start\ncall #main 0\nhalt\n");
 		pw.close();
 		

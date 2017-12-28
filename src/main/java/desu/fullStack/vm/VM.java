@@ -43,49 +43,55 @@ public class VM {
 	
 	private void step() {
 		int instruction = prog[ip++];
-		
+
 		int[] tmp = new int[5]; 
+		float[] ftmp = new float[5]; 
 		
 		switch (instruction) {
 			case PUSH:
 				tmp[0] = prog[ip++];
 				stack[++sp] = tmp[0];
 				break;
-			case PRINTI:
-				System.out.printf("VM: %d\n", stack[sp--]);
+			case PRINT:
+				System.out.printf("VM: %f\n", f(stack[sp--]));
 				break;
 			case HALT:
 				halt = true;
 				break;
-			case ADDI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] + tmp[0];
+			case ADD:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = i(ftmp[1] + ftmp[0]);
 				break;
-			case SUBI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] - tmp[0];
+			case SUB:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = i(ftmp[1] - ftmp[0]);
 				break;
-			case MULI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] * tmp[0];
+			case MUL:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = i(ftmp[1] * ftmp[0]);
 				break;
-			case DIVI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] / tmp[0];
+			case DIV:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = i(ftmp[1] + ftmp[0]);
 				break;
-			case LTI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] < tmp[0] ? 1 : 0;
+			case LT:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = ftmp[1] < ftmp[0] ? 1 : 0;
 				break;
-			case GTI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] > tmp[0] ? 1 : 0;
+			case GT:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = ftmp[1] > ftmp[0] ? 1 : 0;
+				break;
+			case EQ:
+				ftmp[0] = f(stack[sp--]);
+				ftmp[1] = f(stack[sp--]);
+				stack[++sp] = ftmp[1] == ftmp[0] ? 1 : 0;
 				break;
 			case SCOPY:
 				tmp[0] = stack[sp - prog[ip++]];
@@ -96,11 +102,6 @@ public class VM {
 				break;
 			case POP:
 				sp--;
-				break;
-			case EQI:
-				tmp[0] = stack[sp--];
-				tmp[1] = stack[sp--];
-				stack[++sp] = tmp[1] == tmp[0] ? 1 : 0;
 				break;
 			case BR_TRUE:
 				if(stack[sp--] != 0)
@@ -148,7 +149,12 @@ public class VM {
 		
 	}
 	
-	
+	private static float f(int i) {
+		return Float.intBitsToFloat(i);
+	}
+	private static int i(float f) {
+		return Float.floatToIntBits(f);
+	}
 	
 	
 }

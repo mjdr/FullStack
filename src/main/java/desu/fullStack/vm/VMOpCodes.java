@@ -4,17 +4,17 @@ public abstract class VMOpCodes {
 	public static final int HALT = 0;
 	public static final int PUSH = 1;
 	public static final int POP = 2;
-	public static final int ADDI = 3;
-	public static final int SUBI = 4;
-	public static final int MULI = 5;
-	public static final int DIVI = 6;
+	public static final int ADD = 3;
+	public static final int SUB = 4;
+	public static final int MUL = 5;
+	public static final int DIV = 6;
 	public static final int GOTO = 7;
 	public static final int BR_TRUE = 8;
-	public static final int PRINTI = 9;
+	public static final int PRINT = 9;
 	public static final int SCOPY = 10;
-	public static final int LTI = 11;
-	public static final int GTI = 12;
-	public static final int EQI = 13;
+	public static final int LT = 11;
+	public static final int GT = 12;
+	public static final int EQ = 13;
 	public static final int RET = 14;
 	public static final int CALL = 15;
 	public static final int ARG = 16;
@@ -27,17 +27,17 @@ public abstract class VMOpCodes {
 			0, //HALT 
 			1, //PUSH
 			0, //POP
-			0, //ADDI
-			0, //SUBI
-			0, //MULI
-			0, //DIVI
+			0, //ADD
+			0, //SUB
+			0, //MUL
+			0, //DIV
 			1, //GOTO
 			1, //BR_TRUE
-			0, //PRINTI
+			0, //PRINT
 			1, //SCOPY	
-			0, //LTI
-			0, //GTI	
-			0, //EQI
+			0, //LT
+			0, //GT	
+			0, //EQ
 			0, //RET	
 			2, //CALL
 			1, //ARG
@@ -50,17 +50,17 @@ public abstract class VMOpCodes {
 			"HALT", 
 			"PUSH",
 			"POP",
-			"ADDI",
-			"SUBI",
-			"MULI",
-			"DIVI",
+			"ADD",
+			"SUB",
+			"MUL",
+			"DIV",
 			"GOTO",
 			"BR_TRUE",
-			"PRINTI",
+			"PRINT",
 			"SCOPY",
-			"LTI",
-			"GTI",
-			"EQI",
+			"LT",
+			"GT",
+			"EQ",
 			"RET",
 			"CALL",
 			"ARG",

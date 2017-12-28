@@ -151,7 +151,7 @@ public class Parser {
 			if(parts[i].startsWith("#"))
 				values[i - 1] = new Value(parts[i]);
 			else
-				values[i - 1] = new Value(Integer.parseInt(parts[i]));
+				values[i - 1] = new Value(Float.floatToIntBits(Float.parseFloat(parts[i])));
 		}
 		address += parts.length;
 		

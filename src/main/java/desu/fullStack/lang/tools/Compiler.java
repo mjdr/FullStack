@@ -35,25 +35,25 @@ public class Compiler {
 		
 		switch (expression.getType()) {
 			case ADD:
-				buffer.append("addi\n");
+				buffer.append("add\n");
 				break;
 			case SUB:
-				buffer.append("subi\n");
+				buffer.append("sub\n");
 				break;
 			case MUL:
-				buffer.append("muli\n");
+				buffer.append("mul\n");
 				break;
 			case DIV:
-				buffer.append("divi\n");
+				buffer.append("div\n");
 				break;
 			case EQEQ:
-				buffer.append("eqi\n");
+				buffer.append("eq\n");
 				break;
 			case LESS:
-				buffer.append("lti\n");
+				buffer.append("lt\n");
 				break;
 			case GREATER:
-				buffer.append("gti\n");
+				buffer.append("gt\n");
 				break;
 				
 		}
@@ -65,7 +65,7 @@ public class Compiler {
 		
 		switch (expression.getType()) {
 			case MINUS:
-				return compileExpression(expression.getOp()) + "push -1\nmuli\n";
+				return compileExpression(expression.getOp()) + "push -1\nmul\n";
 		}
 		
 		return null;
@@ -125,7 +125,7 @@ public class Compiler {
 	}
 
 	private String compilePrintStatement(PrintStatement statement) {
-		return compileExpression(statement.getExpression()) + "printi\n";
+		return compileExpression(statement.getExpression()) + "print\n";
 	}
 	
 }

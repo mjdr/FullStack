@@ -1,0 +1,41 @@
+
+#fibonachi
+	arg 0
+	push 0
+	lti
+	br_true #fact_x_less_zero
+	
+	arg 0
+	push 1
+	eqi
+	br_true #fact_x_one
+	
+	arg 0
+	push 1
+	subi
+	call #fibonachi 1
+	
+	arg 0
+	push 2
+	subi
+	call #fibonachi 1
+	
+	addi
+	ret
+	
+#fact_x_less_zero
+	push 0
+	ret
+#fact_x_one
+	push 1
+	ret
+	
+
+
+#_start
+	push 8
+	call #fibonachi 1
+	printi
+	halt
+		
+		

@@ -1,0 +1,14 @@
+
+
+#_start
+push 10
+push -1
+muli
+push 2
+muli
+push 34
+push 2
+divi
+addi
+printi
+halt

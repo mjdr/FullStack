@@ -1,14 +1,27 @@
+#main
+push 2
+push 1
+addi
+push 3
+eqi
+br_true #if_true_0
+push 3
+push -1
+muli
+printi
+goto #if_end_0
+#if_true_0
+push 9
+push 1
+addi
+printi
+#if_end_0
+push 0
+ret
+
+
 
 
 #_start
-push 10
-push -1
-muli
-push 2
-muli
-push 34
-push 2
-divi
-addi
-printi
+call #main 0
 halt

@@ -82,6 +82,11 @@ public class VM {
 				tmp[1] = stack[sp--];
 				stack[++sp] = tmp[1] < tmp[0] ? 1 : 0;
 				break;
+			case GTI:
+				tmp[0] = stack[sp--];
+				tmp[1] = stack[sp--];
+				stack[++sp] = tmp[1] > tmp[0] ? 1 : 0;
+				break;
 			case SCOPY:
 				tmp[0] = stack[sp - prog[ip++]];
 				stack[++sp] = tmp[0];

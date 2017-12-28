@@ -2,7 +2,7 @@ package desu.fullStack.lang.ast;
 
 public class BinaryExpression implements Expression {
 	public enum Type {
-		ADD,SUB,MUL,DIV
+		ADD,SUB,MUL,DIV,EQEQ,LESS,GREATER
 	};
 	
 	private Type type;

@@ -6,11 +6,25 @@ public enum TokenType {
 	STAR,
 	SLASH,
 	NUMBER,
-	LBR,
-	RBR,
+	LBR, // (
+	RBR, // )
+	LCBR, // {
+	RCBR, // }
 	SEMI, //;
+	LT, // <
+	GT, // >
+	EQ, // =
+	COLOM, //,
 	EOF,
 	
 	//KEYWORDS
 	PRINT,
+	IF,
+	ELSE,
+	EQEQ, // ==
+	
+	
+	ID,
+	
+	
 }

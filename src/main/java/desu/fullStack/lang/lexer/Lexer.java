@@ -10,7 +10,7 @@ import javax.swing.text.html.parser.Entity;
 
 public class Lexer {
 	
-	private static final String oneChar = "+-*/();";
+	private static final String oneChar = "+-*/();{}<>=,";
 	private static final TokenType[] oneCharT = {
 			TokenType.PLUS,
 			TokenType.MINUS,
@@ -19,6 +19,14 @@ public class Lexer {
 			TokenType.LBR,
 			TokenType.RBR,
 			TokenType.SEMI,
+			TokenType.LCBR,
+			TokenType.RCBR,
+			TokenType.LT,
+			TokenType.GT,
+			TokenType.EQ,
+			TokenType.COLOM,
+			
+			
 	}; 
 	private final Map<String, TokenType> keyWords = new HashMap<String, TokenType>();
 	
@@ -31,6 +39,9 @@ public class Lexer {
 	
 	public Lexer() {
 		keyWords.put("print", TokenType.PRINT);
+		keyWords.put("if", TokenType.IF);
+		keyWords.put("else", TokenType.ELSE);
+		keyWords.put("==", TokenType.EQEQ);
 	}
 	
 	public List<Token> tokenize(String source){
@@ -63,12 +74,26 @@ public class Lexer {
 			return;
 		}
 		
+		if(Character.isLetter(peek())) {
+			tokenizeID();
+			return;
+		}
+		
 		if(oneChar.indexOf(peek()) != -1) {
 			tokens.add(new Token(oneCharT[oneChar.indexOf(read())]));
 			return;
 		}
 		
 		throw new RuntimeException("Unknow char: '" + peek() + "'");
+	}
+
+	private void tokenizeID() {
+		StringBuffer buffer = new StringBuffer();
+		
+		while(Character.isLetterOrDigit(peek()) || peek() == '_')
+			buffer.append(read());
+		
+		tokens.add(new Token(TokenType.ID, buffer.toString()));
 	}
 
 	private void tokenizeKeyword() {

@@ -11,6 +11,18 @@ public class IfStatement implements Statement {
 		this.falseStatement = falseStatement;
 	}
 	
+	public Expression getCondition() {
+		return condition;
+	}
+	
+	public Statement getFalseStatement() {
+		return falseStatement;
+	}
+	
+	public Statement getTrueStatement() {
+		return trueStatement;
+	}
+	
 	
 
 }

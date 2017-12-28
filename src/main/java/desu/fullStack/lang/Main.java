@@ -1,7 +1,13 @@
 package desu.fullStack.lang;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
+import desu.fullStack.App;
 import desu.fullStack.lang.ast.Expression;
 import desu.fullStack.lang.ast.Statement;
 import desu.fullStack.lang.lexer.Lexer;
@@ -10,21 +16,48 @@ import desu.fullStack.lang.tools.Compiler;
 
 public class Main {
 	public static void main(String[] args) {
-		new Main();
+		try {
+			new Main();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public Main() {
+	public Main() throws IOException {
 		Lexer lexer = new Lexer();
 		Parser parser;
 		Compiler compiler = new Compiler();
 		
-		List<Token> tokens = lexer.tokenize("print -10 * 2 + 34 / 2;");
-		//tokens.forEach(System.out::println);
+		String source = readFile(new File("res/prog.lg"));
+		
+		List<Token> tokens = lexer.tokenize(source);
+		tokens.forEach(System.out::println);
 		parser = new Parser(tokens);
-		Statement statement = parser.parseStatement();
+		Statement statement = parser.parse();
+		System.out.println(statement);
 		
+		PrintWriter pw = new PrintWriter("res/prog.vm");
+		pw.print(compiler.compileStatement(statement));
+		pw.print("\n\n\n\n#_start\ncall #main 0\nhalt\n");
+		pw.close();
 		
-		System.out.println(compiler.compileStatement(statement));
+		App.main(new String[]{});
 		
+	}
+	
+	
+	public String readFile(File file) throws IOException {
+		StringBuffer buffer = new StringBuffer();
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		
+		String line;
+		
+		while((line = reader.readLine()) != null)
+			buffer.append(line).append('\n');
+		
+		reader.close();
+		
+		return buffer.toString();
 	}
 }

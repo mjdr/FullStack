@@ -4,6 +4,8 @@ import static desu.fullStack.vm.VMOpCodes.*;
 
 import java.util.Arrays;
 
+import desu.fullStack.vm.memory.Memory;
+
 public class VM {
 	//Stats
 	private long steps;
@@ -16,7 +18,10 @@ public class VM {
 	private int[] stack;
 	private int[] prog;
 	
+	private Memory memory;
+	
 	public void execute(BytecodeProgram program) {
+		memory = new Memory(10000);
 		sp = -1;
 		fp = 0;
 		halt = false;
@@ -51,9 +56,6 @@ public class VM {
 			case PUSH:
 				tmp[0] = prog[ip++];
 				stack[++sp] = tmp[0];
-				break;
-			case PRINT:
-				System.out.printf("VM: %f\n", f(stack[sp--]));
 				break;
 			case HALT:
 				halt = true;
@@ -141,6 +143,17 @@ public class VM {
 				tmp[1] = stack[sp--];
 				stack[fp + tmp[0] + 1] = tmp[1];
 				break;
+				
+			case MEM_GET:
+				tmp[0] = fi(stack[sp--]);
+				stack[++sp] = memory.get(tmp[0]);
+				break;
+			case MEM_SET:
+				tmp[0] = stack[sp--];
+				tmp[1] = fi(stack[sp--]);
+				memory.set(tmp[1], tmp[0]);
+				break;
+			
 
 		default:
 			throw new RuntimeException(String.format("Instruction not implemented: %d", instruction));
@@ -152,9 +165,13 @@ public class VM {
 	private static float f(int i) {
 		return Float.intBitsToFloat(i);
 	}
+	private static int fi(int i) {
+		return (int)Float.intBitsToFloat(i);
+	}
 	private static int i(float f) {
 		return Float.floatToIntBits(f);
 	}
+	
 	
 	
 }

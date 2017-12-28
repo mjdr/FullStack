@@ -1,28 +1,8 @@
 #main
-	local_vars 1
-	
-	push 2.0
-	lvar_set 0
-	
-	lvar_get 0
-	push 2.0
-	add
-	push 4.0
-	eq
-	br_true #if_true_0
-		push 3.0
-		push -1
-		mul
-		print
-	goto #if_end_0
-	#if_true_0
-		push 9.5
-		push 12.5
-		add
-		print
-	#if_end_0
-	
-	push 0
+	push 1025
+	push 20
+	mem_set
+	push 1
 	ret
 
 

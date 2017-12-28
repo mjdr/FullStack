@@ -10,17 +10,18 @@ public abstract class VMOpCodes {
 	public static final int DIV = 6;
 	public static final int GOTO = 7;
 	public static final int BR_TRUE = 8;
-	public static final int PRINT = 9;
-	public static final int SCOPY = 10;
-	public static final int LT = 11;
-	public static final int GT = 12;
-	public static final int EQ = 13;
-	public static final int RET = 14;
-	public static final int CALL = 15;
-	public static final int ARG = 16;
-	public static final int LOCAL_VARS = 17;
-	public static final int LVAR_GET = 18;
-	public static final int LVAR_SET = 19;
+	public static final int SCOPY = 9;
+	public static final int LT = 10;
+	public static final int GT = 11;
+	public static final int EQ = 12;
+	public static final int RET = 13;
+	public static final int CALL = 14;
+	public static final int ARG = 15;
+	public static final int LOCAL_VARS = 16;
+	public static final int LVAR_GET = 17;
+	public static final int LVAR_SET = 18;
+	public static final int MEM_GET = 19;
+	public static final int MEM_SET = 20;
 	
 	
 	public static final int[] argsCount = {
@@ -33,7 +34,6 @@ public abstract class VMOpCodes {
 			0, //DIV
 			1, //GOTO
 			1, //BR_TRUE
-			0, //PRINT
 			1, //SCOPY	
 			0, //LT
 			0, //GT	
@@ -44,6 +44,8 @@ public abstract class VMOpCodes {
 			1, //LOCAL_VARS
 			1, //LVAR_GET
 			1, //LVAR_SET
+			0, //MEM_GET
+			0, //MEM_SET
 	};
 	
 	public static final String[] names = {
@@ -56,7 +58,6 @@ public abstract class VMOpCodes {
 			"DIV",
 			"GOTO",
 			"BR_TRUE",
-			"PRINT",
 			"SCOPY",
 			"LT",
 			"GT",
@@ -67,6 +68,8 @@ public abstract class VMOpCodes {
 			"LOCAL_VARS",
 			"LVAR_GET",
 			"LVAR_SET",
+			"MEM_GET",
+			"MEM_SET"
 	};
 	
 	public static int toIndex(String name) {

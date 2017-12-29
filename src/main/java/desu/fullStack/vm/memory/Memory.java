@@ -3,6 +3,7 @@ package desu.fullStack.vm.memory;
 import java.util.ArrayList;
 import java.util.List;
 
+import desu.fullStack.vm.memory.dev.DisplayDev;
 import desu.fullStack.vm.memory.dev.PrinterDev;
 
 public class Memory {
@@ -15,8 +16,9 @@ public class Memory {
 		this.size = size;
 		memory = new int[this.size];
 		devices = new ArrayList<Device>();
-		
+
 		devices.add(new PrinterDev());
+		devices.add(new DisplayDev());
 	}
 	
 	public int get(int address) {

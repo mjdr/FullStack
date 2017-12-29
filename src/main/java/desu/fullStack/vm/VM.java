@@ -78,7 +78,7 @@ public class VM {
 			case DIV:
 				ftmp[0] = f(stack[sp--]);
 				ftmp[1] = f(stack[sp--]);
-				stack[++sp] = i(ftmp[1] + ftmp[0]);
+				stack[++sp] = i(ftmp[1] / ftmp[0]);
 				break;
 			case LT:
 				ftmp[0] = f(stack[sp--]);
@@ -162,13 +162,13 @@ public class VM {
 		
 	}
 	
-	private static float f(int i) {
+	public static float f(int i) {
 		return Float.intBitsToFloat(i);
 	}
-	private static int fi(int i) {
+	public static int fi(int i) {
 		return (int)Float.intBitsToFloat(i);
 	}
-	private static int i(float f) {
+	public static int i(float f) {
 		return Float.floatToIntBits(f);
 	}
 	

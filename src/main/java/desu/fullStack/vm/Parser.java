@@ -89,7 +89,7 @@ public class Parser {
 		
 		//System.out.println(Arrays.toString(codes));
 		
-		return new BytecodeProgram(codes, 1024, labels.get("#_start"));
+		return new BytecodeProgram(codes, 102400000, labels.get("#_start"));
 	}
 
 	private int[] toBytecode(int size) {

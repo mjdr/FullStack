@@ -33,10 +33,10 @@ public class Main {
 		String source = readFile(new File("res/prog.lg"));
 		
 		List<Token> tokens = lexer.tokenize(source);
-		tokens.forEach(System.out::println);
+		//tokens.forEach(System.out::println);
 		parser = new Parser(tokens);
 		Statement statement = parser.parse();
-		System.out.println(statement);
+		//System.out.println(statement);
 		
 		PrintWriter pw = new PrintWriter("res/prog.vm");
 		pw.print(compiler.compileStatement(CompilerEnv.create(), statement));

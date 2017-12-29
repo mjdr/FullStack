@@ -8,12 +8,16 @@ import java.util.Map;
 import desu.fullStack.lang.ast.BinaryExpression;
 import desu.fullStack.lang.ast.ConstantExpression;
 import desu.fullStack.lang.ast.Expression;
+import desu.fullStack.lang.ast.FunctionCallExpression;
+import desu.fullStack.lang.ast.FunctionCallStatement;
 import desu.fullStack.lang.ast.FunctionStatement;
 import desu.fullStack.lang.ast.IfStatement;
 import desu.fullStack.lang.ast.PrintStatement;
+import desu.fullStack.lang.ast.ReturnStatement;
 import desu.fullStack.lang.ast.Statement;
 import desu.fullStack.lang.ast.StatementBlock;
 import desu.fullStack.lang.ast.UnaryExpression;
+import desu.fullStack.lang.ast.VMCodeStatement;
 import desu.fullStack.lang.ast.VariableAssignStatement;
 import desu.fullStack.lang.ast.VariableExpression;
 import desu.fullStack.lang.ast.VariableInitStatement;
@@ -32,14 +36,21 @@ public class Parser {
 	}
 	
 	public Statement parse() {
-		return parseFunctionStatement();
+		
+		StatementBlock block = new StatementBlock();
+		
+		while(index < tokens.size()) 
+			block.add(parseFunctionStatement());
+		
+		
+		return block;
 	}
 	private Statement parseStatement() {
 		
-		if(peek().type == TokenType.PRINT)
-			return parsePrintStatement();
 		if(peek().type == TokenType.IF)
 			return parseIfStatement();
+		if(peek().type == TokenType.RETURN)
+			return parseReturnStatement();
 		if(peek().type == TokenType.LCBR)
 			return parseStatementBlock();
 		
@@ -54,11 +65,43 @@ public class Parser {
 				peek(1).type == TokenType.EQ
 		 ) return parseVariableAssignStatement();
 		
+		if(
+				peek(0).type == TokenType.ID &&
+				peek(1).type == TokenType.LBR
+		 ) return parseFunctionCallStatement();
+		
 		 
 		
 		throw new RuntimeException("Unexpected token " + peek());
 		
 	}
+	private Statement parseReturnStatement() {
+		must(TokenType.RETURN);
+		Expression expression = null;
+		if(peek().type != TokenType.SEMI)
+			expression = parseExpression();
+		must(TokenType.SEMI);
+		
+		return new ReturnStatement(expression);
+	}
+
+	private Statement parseFunctionCallStatement() {
+		String name = must(TokenType.ID).text;
+		List<Expression> args = new ArrayList<Expression>();
+		must(TokenType.LBR);
+		
+		while(peek().type != TokenType.RBR) {
+			args.add(parseExpression());
+			if(peek().type == TokenType.COLOM)
+				read();
+		}
+		must(TokenType.RBR);
+		must(TokenType.SEMI);
+		
+		return new FunctionCallStatement(name, args);
+		
+	}
+
 	private Statement parseVariableAssignStatement() {
 		String name = must(TokenType.ID).text;
 		must(TokenType.EQ);
@@ -78,20 +121,30 @@ public class Parser {
 		String retType = must(TokenType.ID).text;
 		String name = must(TokenType.ID).text;
 		Map<String, String> args = new HashMap<String, String>();
+		List<String> argsNames = new ArrayList<>();
 		must(TokenType.LBR);
 		
 		while(peek().type != TokenType.RBR) {
 			String aType = must(TokenType.ID).text;
 			String aName = must(TokenType.ID).text;
 			args.put(aName, aType);
+			argsNames.add(aName);
 			if(peek().type != TokenType.RBR)
 				must(TokenType.COLOM);
 		}
 		must(TokenType.RBR);
-		Statement body = parseStatement();
+		Statement body;
+		if(peek().type == TokenType.VM_CODE)
+			body = parseVMCodeStatement();
+		else
+			body = parseStatement();
 		
-		return new FunctionStatement(retType, name, args, body);
+		return new FunctionStatement(retType, name, args, argsNames, body);
 	}
+	private Statement parseVMCodeStatement() {
+		return new VMCodeStatement(must(TokenType.VM_CODE).text);
+	}
+
 	private Statement parseStatementBlock() {
 		StatementBlock block = new StatementBlock();
 		
@@ -117,13 +170,6 @@ public class Parser {
 		}
 		
 		return new IfStatement(cond, trueStatement, falseStatement);
-	}
-
-	private Statement parsePrintStatement() {
-		must(TokenType.PRINT);
-		Expression expression = parseExpression();
-		must(TokenType.SEMI);
-		return new PrintStatement(expression);
 	}
 
 	public Expression parseExpression() {
@@ -191,6 +237,11 @@ public class Parser {
 	private Expression number() {
 		if(peek().type == TokenType.NUMBER)
 			return new ConstantExpression(Float.parseFloat(must(TokenType.NUMBER).text));
+		if(
+				peek(0).type == TokenType.ID &&
+				peek(1).type == TokenType.LBR
+				)
+			return parseFunctionCallExpression();
 		if(peek().type == TokenType.ID)
 			return new VariableExpression(must(TokenType.ID).text);
 		if(peek().type == TokenType.LBR) {
@@ -199,6 +250,8 @@ public class Parser {
 			must(TokenType.RBR);
 			return expression;
 		}
+		
+		
 		must(null);
 		return null;
 	}
@@ -207,6 +260,21 @@ public class Parser {
 	
 	
 	
+	private Expression parseFunctionCallExpression() {
+		String name = must(TokenType.ID).text;
+		List<Expression> args = new ArrayList<Expression>();
+		must(TokenType.LBR);
+		
+		while(peek().type != TokenType.RBR) {
+			args.add(parseExpression());
+			if(peek().type == TokenType.COLOM)
+				read();
+		}
+		must(TokenType.RBR);
+		
+		return new FunctionCallExpression(name, args);
+	}
+
 	private Token must(TokenType type) {
 		if(peek().type == type) {
 			

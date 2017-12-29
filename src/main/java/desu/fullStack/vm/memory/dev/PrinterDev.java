@@ -4,6 +4,7 @@ import desu.fullStack.vm.memory.Device;
 
 public class PrinterDev implements Device {
 
+	@SuppressWarnings("unused")
 	private int mode;
 	
 	@Override

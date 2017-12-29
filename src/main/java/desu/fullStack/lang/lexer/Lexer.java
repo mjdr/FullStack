@@ -38,10 +38,10 @@ public class Lexer {
 	
 	
 	public Lexer() {
-		keyWords.put("print", TokenType.PRINT);
 		keyWords.put("if", TokenType.IF);
 		keyWords.put("else", TokenType.ELSE);
 		keyWords.put("==", TokenType.EQEQ);
+		keyWords.put("return", TokenType.RETURN);
 	}
 	
 	public List<Token> tokenize(String source){
@@ -68,6 +68,10 @@ public class Lexer {
 			tokenizeNumber();
 			return;
 		}
+		if(isNext("__vm__")) {
+			tokenizeVMCode();
+			return;
+		}
 		
 		if(keyWords.keySet().stream().filter(k->isNext(k)).count() > 0) {
 			tokenizeKeyword();
@@ -85,6 +89,18 @@ public class Lexer {
 		}
 		
 		throw new RuntimeException("Unknow char: '" + peek() + "'");
+	}
+
+	private void tokenizeVMCode() {
+		StringBuffer buffer = new StringBuffer();
+		read();read();read();read();read();read();
+		
+		while(!isNext("__endvm__"))
+			buffer.append(read());
+		read();read();read();read();read();read();read();read();read();
+		
+		
+		tokens.add(new Token(TokenType.VM_CODE, buffer.toString()));
 	}
 
 	private void tokenizeID() {

@@ -10,6 +10,24 @@ local_vars 0
 
 push 0
 ret
+#print
+local_vars 1
+push 1024.0
+lvar_set 0
+lvar_get 0
+push 0.0
+add
+push 0.0
+call #mem_set 2
+pop
+lvar_get 0
+push 1.0
+add
+arg 0
+call #mem_set 2
+pop
+push 0
+ret
 #initDisplay
 local_vars 1
 push 1030.0
@@ -76,15 +94,15 @@ call #mem_set 2
 pop
 push 0
 ret
-#fillMandelbrot
+#fill
 local_vars 0
-arg 0
+arg 1
 push 599.0
 eq
 br_true #if_true_0
 goto #if_end_0
 #if_true_0
-arg 1
+arg 2
 push 799.0
 eq
 br_true #if_true_0
@@ -94,140 +112,59 @@ push 0
 ret
 #if_end_0
 #if_end_0
-arg 1
+arg 2
 push 800.0
 eq
 br_true #if_true_2
+arg 2
 arg 1
 arg 0
-call #drawMandelbrot 2
+arg 0
+arg 0
+call #drawDisplay 5
 pop
-arg 1
+arg 2
 push 1.0
 add
+arg 1
 arg 0
-call #fillMandelbrot 2
+call #fill 3
 pop
 goto #if_end_2
 #if_true_2
 push 0.0
-arg 0
+arg 1
 push 1.0
 add
-call #fillMandelbrot 2
+arg 0
+call #fill 3
 pop
 push 0
 ret
 #if_end_2
 push 0
 ret
-#drawMandelbrot
-local_vars 4
-arg 1
-push 400.0
-sub
-push 300.0
-div
-push 0.5
-sub
-lvar_set 0
+#filler
+local_vars 0
 arg 0
-push 300.0
-sub
-push 300.0
-div
-lvar_set 1
-lvar_get 0
-lvar_get 1
-lvar_get 0
-lvar_get 1
-push 0.0
-call #calcMandelbrot 5
-lvar_set 2
-lvar_get 2
-push 90.0
-gt
-br_true #if_true_3
 push 1.0
-lvar_get 2
-push 90.0
-div
-sub
-lvar_set 3
-arg 1
-arg 0
-lvar_get 3
-lvar_get 3
-lvar_get 3
-call #drawDisplay 5
-pop
+lt
+br_true #if_true_3
 goto #if_end_3
 #if_true_3
-arg 1
+push 0.0
+push 0.0
 arg 0
-push 0.0
-push 0.0
-push 0.0
-call #drawDisplay 5
+call #fill 3
+pop
+arg 0
+push 1.0
+push 50.0
+div
+add
+call #filler 1
 pop
 #if_end_3
-push 0
-ret
-#calcMandelbrot
-local_vars 2
-arg 4
-arg 4
-mul
-arg 3
-arg 3
-mul
-add
-push 4.0
-gt
-br_true #if_true_4
-goto #if_end_4
-#if_true_4
-push 0.0
-ret
-#if_end_4
-arg 0
-push 100.0
-eq
-br_true #if_true_5
-goto #if_end_5
-#if_true_5
-push 0.0
-ret
-#if_end_5
-arg 4
-arg 4
-mul
-arg 3
-arg 3
-mul
-sub
-arg 2
-add
-lvar_set 0
-push 2.0
-arg 4
-mul
-arg 3
-mul
-arg 1
-add
-lvar_set 1
-push 1.0
-lvar_get 0
-lvar_get 1
-arg 2
-arg 1
-arg 0
-push 1.0
-add
-call #calcMandelbrot 5
-add
-ret
 push 0
 ret
 #main
@@ -235,8 +172,27 @@ local_vars 0
 call #initDisplay 0
 pop
 push 0.0
+call #filler 1
+pop
 push 0.0
-call #fillMandelbrot 2
+call #filler 1
+pop
+push 0.0
+call #filler 1
+pop
+push 0.0
+call #filler 1
+pop
+push 0.0
+call #filler 1
+pop
+push 5.0
+push 1.0
+div
+call #print 1
+pop
+push 11.0
+call #print 1
 pop
 push 0
 ret

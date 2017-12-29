@@ -3,12 +3,16 @@ package desu.fullStack.lang.tools;
 import desu.fullStack.lang.ast.BinaryExpression;
 import desu.fullStack.lang.ast.ConstantExpression;
 import desu.fullStack.lang.ast.Expression;
+import desu.fullStack.lang.ast.FunctionCallExpression;
+import desu.fullStack.lang.ast.FunctionCallStatement;
 import desu.fullStack.lang.ast.FunctionStatement;
 import desu.fullStack.lang.ast.IfStatement;
 import desu.fullStack.lang.ast.PrintStatement;
+import desu.fullStack.lang.ast.ReturnStatement;
 import desu.fullStack.lang.ast.Statement;
 import desu.fullStack.lang.ast.StatementBlock;
 import desu.fullStack.lang.ast.UnaryExpression;
+import desu.fullStack.lang.ast.VMCodeStatement;
 import desu.fullStack.lang.ast.VariableAssignStatement;
 import desu.fullStack.lang.ast.VariableExpression;
 import desu.fullStack.lang.ast.VariableInitStatement;
@@ -26,17 +30,35 @@ public class Compiler {
 			return compileBinaryExpression(env, (BinaryExpression) expression);
 		if(expression instanceof VariableExpression)
 			return compileVariableExpression(env, (VariableExpression) expression);
+		if(expression instanceof FunctionCallExpression)
+			return compileFunctionCallExpression(env, (FunctionCallExpression) expression);
 		
 		throw new RuntimeException("Compiling type " + expression.getClass().getName() + " not implemented!");
 		
 	}
 
-	private String compileVariableExpression(CompilerEnv env, VariableExpression expression) {
-		int id = env.getLocalVarId(expression.getName());
-		if(id == -1) throw new RuntimeException(String.format("Local variable %s not defined in function %s", 
-				expression.getName(),env.current.getName()));
+	private String compileFunctionCallExpression(CompilerEnv env, FunctionCallExpression expression) {
+		StringBuffer buffer = new StringBuffer();
+		for(Expression e : expression.getArgs())
+			buffer.append(compileExpression(env, e));
 		
-		return "lvar_get " + id + "\n";
+		buffer.append("call #" + expression.getName() + " " + expression.getArgs().size() + "\n");
+		
+		return buffer.toString();
+	}
+
+	private String compileVariableExpression(CompilerEnv env, VariableExpression expression) {
+		int lid = env.getLocalVarId(expression.getName());
+		int aid = env.getArgumentId(expression.getName());
+
+		if(lid != -1)
+			return "lvar_get " + lid + "\n";
+		if(aid != -1)
+			return "arg " + (env.current.getArgs().size() - aid - 1) + "\n";
+		
+		
+		 throw new RuntimeException(String.format("Local variable %s not defined in function %s", 
+					expression.getName(),env.current.getName()));
 	}
 
 	private String compileBinaryExpression(CompilerEnv env, BinaryExpression expression) {
@@ -102,8 +124,35 @@ public class Compiler {
 			return compileVariableInitStatement(env, (VariableInitStatement) statement);
 		if(statement instanceof VariableAssignStatement)
 			return compileVariableAssignStatement(env, (VariableAssignStatement) statement);
+		if(statement instanceof VMCodeStatement)
+			return compileVMCodeStatement(env, (VMCodeStatement) statement);
+		if(statement instanceof FunctionCallStatement)
+			return compileFunctionCallStatement(env, (FunctionCallStatement) statement);
+		if(statement instanceof ReturnStatement)
+			return compileReturnStatement(env, (ReturnStatement) statement);
 		
 		throw new RuntimeException("Compiling type " + statement.getClass().getName() + " not implemented!");
+	}
+
+	private String compileReturnStatement(CompilerEnv env, ReturnStatement statement) {
+		if(statement.getExpression() == null)
+			return "push 0\nret\n";
+		return compileExpression(env, statement.getExpression()) + "ret\n";
+	}
+
+	private String compileFunctionCallStatement(CompilerEnv env, FunctionCallStatement statement) {
+		StringBuffer buffer = new StringBuffer();
+		for(Expression e : statement.getArgs())
+			buffer.append(compileExpression(env, e));
+		
+		buffer.append("call #" + statement.getName() + " " + statement.getArgs().size() + "\n");
+		buffer.append("pop\n");
+		
+		return buffer.toString();
+	}
+
+	private String compileVMCodeStatement(CompilerEnv env, VMCodeStatement statement) {
+		return "\n" + statement.getCode() + "\n";
 	}
 
 	private String compileVariableAssignStatement(CompilerEnv env, VariableAssignStatement statement) {
@@ -164,7 +213,11 @@ public class Compiler {
 	}
 
 	private String compilePrintStatement(CompilerEnv env, PrintStatement statement) {
-		return compileExpression(env, statement.getExpression()) + "print\n";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(compileExpression(env, statement.getExpression()));
+		buffer.append("call #print 1\n");
+		
+		return  buffer.toString();
 	}
 	
 }

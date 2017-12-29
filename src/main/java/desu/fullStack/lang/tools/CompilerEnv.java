@@ -27,4 +27,12 @@ public class CompilerEnv {
 				return i;
 		return -1;
 	}
+
+
+	public int getArgumentId(String name) {
+		for(int i = 0;i < current.getArgsNames().size();i++)
+			if(current.getArgsNames().get(i).equals(name))
+				return i;
+		return -1;
+	}
 }

@@ -6,6 +6,14 @@ void mem_set(float address, float value) __vm__
 	 ret
 __endvm__
 
+
+void print(float value){
+	float printerAddr;
+	printerAddr = 1024;
+	mem_set(printerAddr + 0, 0);
+	mem_set(printerAddr + 1, value);
+}
+
 void initDisplay(){
 	float displayAddr;
 	displayAddr = 1030;
@@ -28,58 +36,38 @@ void drawDisplay(float x, float y, float r, float g, float b){
 	
 }
 
-void fillMandelbrot(float x, float y){
+void fill(float x, float y, float c){
 	
 	if(y == 599)
 		if(x == 799)
 			return;
 			
 	if(x == 800) {
-		fillMandelbrot(0, y+1);
+		fill(0, y+1, c);
 		return;
 	}
-	else{
-		drawMandelbrot(x,y);
-		fillMandelbrot(x + 1, y);
+	drawDisplay(x,y,c,c,c);
+	fill(x + 1, y, c);
+	
+}
+
+void filler(float t){
+	if(t < 1){
+		fill(0,0,t);
+		filler(t + 1/50);
 	}
 }
-
-void drawMandelbrot(float x ,float y){
-	float px;
-	float py;
-	float iter;
-	px = (x - 400)/300 - 0.5;
-	py = (y - 300)/300;
-	iter = calcMandelbrot(px,py,px,py,0);
-	
-	if(iter > 90)
-		drawDisplay(x,y,0,0,0);
-	else {
-		float c;
-		c = 1 - iter/90;
-		drawDisplay(x,y,c,c,c);
-	}
-}
-
-float calcMandelbrot(float x ,float y, float px, float py, float iter){
-	if(x*x+y*y > 4)
-		return 0;
-	if(iter == 100)
-		return 0;
-	
-	float nx;
-	float ny;
-	
-	nx = x*x - y*y + px;
-	ny = 2*x*y + py;
-	return 1 + calcMandelbrot(nx, ny, px,py,iter + 1);
-}
-
-
 
 void main(){
 	initDisplay();
 	
-	fillMandelbrot(0,0);
+	filler(0);
+	filler(0);
+	filler(0);
+	filler(0);
+	filler(0);
+	
+	print(5/1);
+	print(11);
 	
 }

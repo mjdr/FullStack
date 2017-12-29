@@ -18,13 +18,15 @@ public enum TokenType {
 	EOF,
 	
 	//KEYWORDS
-	PRINT,
 	IF,
 	ELSE,
 	EQEQ, // ==
+	RETURN,
 	
 	
 	ID,
+	VM_CODE,
+	
 	
 	
 }
